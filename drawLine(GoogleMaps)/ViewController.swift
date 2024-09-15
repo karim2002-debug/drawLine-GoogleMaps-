@@ -9,34 +9,29 @@ import UIKit
 import GoogleMaps
 import GooglePlaces
 class ViewController: UIViewController {
-
+    
     var searchBar: UISearchBar!
-
+    
     let locationManger = CLLocationManager()
     @IBOutlet weak var mapView: GMSMapView!
-    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         locationManger.delegate = self
         locationManger.desiredAccuracy = kCLLocationAccuracyBest
+        
         if CLLocationManager.locationServicesEnabled(){
             checkAuth()
         }else{
             locationManger.requestWhenInUseAuthorization()
         }
-        
-        
         searchBar = UISearchBar(frame: CGRect(x: 0, y: 50, width: self.view.frame.width, height: 50))
         searchBar.searchBarStyle = .minimal
         searchBar.searchTextField.backgroundColor = .white
         searchBar.placeholder = "Search for places"
         searchBar.delegate = self
         self.view.addSubview(searchBar)
-
-        
-        
     }
     
     func  checkAuth(){
@@ -49,11 +44,11 @@ class ViewController: UIViewController {
             break
         case .authorizedWhenInUse:
             locationManger.startUpdatingLocation()
-
+            
             break
-
+            
         case .restricted:
-
+            
             break
         case .denied:
             break
@@ -85,8 +80,7 @@ class ViewController: UIViewController {
     }
     
 }
-
-
+// MARK: - SearchBarDelegate
 
 extension ViewController : UISearchBarDelegate{
     
@@ -98,9 +92,7 @@ extension ViewController : UISearchBarDelegate{
     }
     
 }
-
-
-
+// MARK: - GMSAutocompleteViewControllerDelegate
 
 extension ViewController : GMSAutocompleteViewControllerDelegate{
     
@@ -109,7 +101,7 @@ extension ViewController : GMSAutocompleteViewControllerDelegate{
         print("Place name: \(place.name ?? "")")
         print("Place address: \(place.formattedAddress ?? "")")
         let locationCoordinate = place.coordinate
-       setMarker(postion: locationCoordinate, title: "Destination")
+        setMarker(postion: locationCoordinate, title: "Destination")
         drawLine(source: locationManger.location!.coordinate, destination: locationCoordinate)
     }
     
@@ -125,9 +117,10 @@ extension ViewController : GMSAutocompleteViewControllerDelegate{
     
 }
 
+// MARK: - LocationManagerDelegate
 
 extension ViewController : CLLocationManagerDelegate{
- 
+    
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         
         if let location = locations.last {
